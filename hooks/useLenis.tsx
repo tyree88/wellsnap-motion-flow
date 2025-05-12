@@ -1,7 +1,15 @@
+
 "use client"
 
 import { useState, useEffect, useRef } from "react"
 import Lenis from "@studio-freight/lenis"
+import { gsap } from "gsap"
+import { ScrollTrigger } from "gsap/ScrollTrigger"
+
+// Register ScrollTrigger with GSAP
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger)
+}
 
 interface LenisOptions {
   duration?: number
@@ -27,8 +35,8 @@ export function useLenis(options?: LenisOptions) {
   }, [options])
 
   useEffect(() => {
-    if (!optionsRef.current) return
-
+    if (typeof window === "undefined") return
+    
     const lenisInstance = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
@@ -42,6 +50,29 @@ export function useLenis(options?: LenisOptions) {
     })
 
     setLenis(lenisInstance)
+
+    // Set up GSAP ScrollTrigger integration
+    ScrollTrigger.scrollerProxy(window, {
+      scrollTop(value) {
+        if (arguments.length && value !== undefined) {
+          lenisInstance.scrollTo(value)
+        }
+        return lenisInstance.scroll
+      },
+      getBoundingClientRect() {
+        return {
+          top: 0,
+          left: 0,
+          width: window.innerWidth,
+          height: window.innerHeight
+        }
+      }
+    })
+
+    // Update ScrollTrigger on Lenis scroll
+    lenisInstance.on('scroll', () => {
+      ScrollTrigger.update()
+    })
 
     function raf(time: number) {
       lenisInstance.raf(time)
