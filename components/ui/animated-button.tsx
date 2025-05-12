@@ -1,7 +1,7 @@
+
 "use client"
 
 import type React from "react"
-
 import { FlowButton } from "./flow-button"
 
 export function AnimatedButton({
@@ -17,8 +17,25 @@ export function AnimatedButton({
   href?: string
   [key: string]: any
 }) {
+  if (href) {
+    return (
+      <FlowButton 
+        asLink={true} 
+        href={href} 
+        className={className} 
+        {...props}
+      >
+        {children}
+      </FlowButton>
+    )
+  }
+  
   return (
-    <FlowButton onClick={onClick} className={className} asLink={href ? true : false} href={href} {...props}>
+    <FlowButton 
+      onClick={onClick} 
+      className={className} 
+      {...props}
+    >
       {children}
     </FlowButton>
   )

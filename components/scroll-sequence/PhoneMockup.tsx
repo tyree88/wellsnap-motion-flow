@@ -1,3 +1,4 @@
+
 "use client"
 
 import type React from "react"
@@ -254,11 +255,19 @@ const PhoneMockup: React.FC<PhoneMockupProps> = ({
         {sections.map((section, index) => (
           <div
             key={index}
-            ref={(el) => (sectionRefs.current[index] = el)}
+            ref={(el) => {
+              if (sectionRefs.current) {
+                sectionRefs.current[index] = el;
+              }
+            }}
             className="absolute inset-0 flex flex-col items-center p-8 opacity-0"
           >
             <h3
-              ref={(el) => sectionTitleRefs && (sectionTitleRefs.current[index] = el)}
+              ref={(el) => {
+                if (sectionTitleRefs && sectionTitleRefs.current) {
+                  sectionTitleRefs.current[index] = el;
+                }
+              }}
               className="text-2xl font-semibold mb-3 text-center dark:text-white"
             >
               {section.title}
@@ -266,7 +275,11 @@ const PhoneMockup: React.FC<PhoneMockupProps> = ({
 
             {section.description && (
               <p
-                ref={(el) => sectionDescRefs && (sectionDescRefs.current[index] = el)}
+                ref={(el) => {
+                  if (sectionDescRefs && sectionDescRefs.current) {
+                    sectionDescRefs.current[index] = el;
+                  }
+                }}
                 className="text-sm mb-4 text-center text-gray-600 dark:text-gray-300"
               >
                 {section.description}
@@ -274,7 +287,11 @@ const PhoneMockup: React.FC<PhoneMockupProps> = ({
             )}
 
             <div
-              ref={(el) => sectionContentRefs && (sectionContentRefs.current[index] = el)}
+              ref={(el) => {
+                if (sectionContentRefs && sectionContentRefs.current) {
+                  sectionContentRefs.current[index] = el;
+                }
+              }}
               className="flex-grow w-full flex items-center justify-center"
             >
               {section.content}

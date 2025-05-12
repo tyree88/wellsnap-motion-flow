@@ -5,17 +5,23 @@ import type React from "react"
 import Link from "next/link"
 import type { ButtonHTMLAttributes, AnchorHTMLAttributes } from "react"
 
+type ButtonVariant = "default" | "primary" | "secondary" | "outline" | "ghost" | "link"
+type ButtonSize = "default" | "sm" | "lg" | "xl" | "icon"
+
 type BaseProps = {
   text?: string
   className?: string
-  variant?: "default" | "primary" | "secondary"
+  variant?: ButtonVariant
+  size?: ButtonSize
   isLoading?: boolean
   loadingText?: string
+  asChild?: boolean
 }
 
 type ButtonProps = BaseProps &
   ButtonHTMLAttributes<HTMLButtonElement> & {
-    asLink?: false
+    asLink?: false | undefined
+    href?: undefined
   }
 
 type LinkProps = BaseProps &
@@ -30,13 +36,41 @@ export function FlowButton({
   text = "Modern Button",
   className = "",
   variant = "default",
+  size = "default",
   isLoading = false,
   loadingText,
+  asChild,
   ...props
 }: FlowButtonProps) {
   // Common classes for both button and link
   const baseClasses =
     "group relative flex items-center gap-1 overflow-hidden rounded-[100px] border-[1.5px] border-[#333333]/40 bg-transparent px-8 py-3 text-sm font-semibold text-[#111111] cursor-pointer transition-all duration-[600ms] ease-[cubic-bezier(0.23,1,0.32,1)] hover:border-transparent hover:text-white hover:rounded-[12px] active:scale-[0.95] disabled:opacity-70 disabled:cursor-not-allowed"
+
+  // Apply size classes
+  let sizeClasses = "";
+  if (size === "sm") {
+    sizeClasses = "px-5 py-2 text-xs";
+  } else if (size === "lg") {
+    sizeClasses = "px-10 py-4 text-base";
+  } else if (size === "xl") {
+    sizeClasses = "px-12 py-5 text-lg";
+  } else if (size === "icon") {
+    sizeClasses = "p-2 aspect-square";
+  }
+
+  // Apply variant classes
+  let variantClasses = "";
+  if (variant === "outline") {
+    variantClasses = "border-[#333333]/60 hover:bg-[#333333] text-[#333333]";
+  } else if (variant === "ghost") {
+    variantClasses = "border-transparent bg-transparent hover:bg-[#333333]/10 hover:text-[#333333] hover:border-[#333333]/20";
+  } else if (variant === "link") {
+    variantClasses = "border-transparent bg-transparent underline underline-offset-4 hover:text-[#333333] hover:border-transparent";
+  } else if (variant === "primary") {
+    variantClasses = "border-[#6366f1]/60 hover:bg-[#6366f1] text-[#6366f1]";
+  } else if (variant === "secondary") {
+    variantClasses = "border-[#4f46e5]/60 hover:bg-[#4f46e5] text-[#4f46e5]";
+  }
 
   // Common content for both button and link
   const content = isLoading ? (
@@ -51,7 +85,7 @@ export function FlowButton({
 
       {/* Text */}
       <span className="relative z-[1] -translate-x-3 group-hover:translate-x-3 transition-all duration-[800ms] ease-out">
-        {text}
+        {props.children || text}
       </span>
 
       {/* Circle */}
@@ -81,7 +115,7 @@ export function FlowButton({
     return (
       <Link
         href={isLoading ? "#" : href}
-        className={`${baseClasses} ${isLoading ? "pointer-events-none opacity-70" : ""} ${className}`}
+        className={`${baseClasses} ${sizeClasses} ${variantClasses} ${isLoading ? "pointer-events-none opacity-70" : ""} ${className}`}
         {...linkProps2}
       >
         {content}
@@ -90,9 +124,13 @@ export function FlowButton({
   }
 
   // Otherwise render as button
-  const { asLink, ...buttonProps } = props as ButtonProps
+  const { asLink, href, ...buttonProps } = props as ButtonProps
   return (
-    <button className={`${baseClasses} ${className}`} disabled={isLoading || buttonProps.disabled} {...buttonProps}>
+    <button 
+      className={`${baseClasses} ${sizeClasses} ${variantClasses} ${className}`} 
+      disabled={isLoading || buttonProps.disabled} 
+      {...buttonProps}
+    >
       {content}
     </button>
   )

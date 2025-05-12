@@ -1,3 +1,4 @@
+
 "use client"
 
 import type React from "react"
@@ -41,8 +42,6 @@ export const MultiStageScrollSection: React.FC = () => {
   // Apply parallax effect to background elements
   useParallax(".parallax-bg", {
     speed: -10,
-    start: "top bottom",
-    end: "bottom top",
   })
 
   // Animation for section heading and sphere interaction

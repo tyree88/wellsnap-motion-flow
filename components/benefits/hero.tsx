@@ -1,3 +1,4 @@
+
 "use client"
 
 import { FlowButton } from "../ui/flow-button"
@@ -7,8 +8,24 @@ import Link from "next/link"
 import { useEffect, useState } from "react"
 import { ThriveLogo } from "@/components/ui/thrive-logo"
 
+// Define types for the Sphere component
+interface SpherePosition {
+  x: number;
+  y: number;
+  xMove: number;
+  yMove: number;
+}
+
+interface SphereProps {
+  size: number;
+  position: SpherePosition;
+  delay: number;
+  duration: number;
+  color: string;
+}
+
 // Define the Sphere component
-const Sphere = ({ size, position, delay, duration, color }) => {
+const Sphere = ({ size, position, delay, duration, color }: SphereProps) => {
   return (
     <motion.div
       className={`absolute rounded-full ${color} opacity-70 blur-sm`}
@@ -35,13 +52,22 @@ const Sphere = ({ size, position, delay, duration, color }) => {
   )
 }
 
+// Define interface for sphere data
+interface SphereData {
+  size: number;
+  position: SpherePosition;
+  delay: number;
+  duration: number;
+  color: string;
+}
+
 // Define the FloatingSpheres component
 const FloatingSpheres = ({ count = 20 }) => {
-  const [spheres, setSpheres] = useState([])
+  const [spheres, setSpheres] = useState<SphereData[]>([])
 
   useEffect(() => {
     // Generate random spheres on component mount
-    const newSpheres = Array.from({ length: count }).map((_, i) => {
+    const newSpheres: SphereData[] = Array.from({ length: count }).map((_, i) => {
       const size = Math.random() * 30 + 10 // 10-40px
       const x = Math.random() * 100 // 0-100%
       const y = Math.random() * 100 // 0-100%
@@ -97,7 +123,6 @@ const BenefitsHero = () => {
             Innovative solutions designed to elevate your brand and engage your audience
           </h1>
           <FlowButton
-            size="lg"
             className="bg-white hover:bg-white/90 text-primary border border-primary/20 font-medium py-2 px-8 rounded-full shadow-sm"
           >
             Get Started

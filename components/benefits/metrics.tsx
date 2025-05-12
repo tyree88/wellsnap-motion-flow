@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState, useEffect, useRef } from "react"
@@ -51,7 +52,7 @@ const BenefitsMetrics = () => {
   const [useFallback, setUseFallback] = useState(false)
 
   // Create a single ref that holds an array
-  const sectionRefs = useRef<(HTMLDivElement | null)[]>([])
+  const sectionRefs = useRef<Array<HTMLDivElement | null>>([])
 
   const { scrollYProgress } = useScroll()
   const opacity = useTransform(scrollYProgress, [0.2, 0.3, 0.7, 0.8], [0, 1, 1, 0])
@@ -113,7 +114,9 @@ const BenefitsMetrics = () => {
           {metricsData.map((metric, index) => (
             <div
               key={metric.id}
-              ref={(el) => (sectionRefs.current[index] = el)}
+              ref={(el) => {
+                sectionRefs.current[index] = el;
+              }}
               className={`py-10 md:py-20 ${useFallback ? "mb-8" : ""}`}
             >
               <motion.div
